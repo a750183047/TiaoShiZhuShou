@@ -80,8 +80,8 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onPause() {
+        super.onPause();
         finish();
     }
 
@@ -113,10 +113,10 @@ public class SplashActivity extends AppCompatActivity {
                 updateBean = result;
                 descriptionFromInternet = updateBean.getDescription();
                 if (Integer.parseInt(updateBean.getVersionCode()) > versionCode) {
-
                     showUpdateDialog();
                 } else {
                     enterHomeActivity();
+
                 }
 
             }
@@ -178,7 +178,7 @@ public class SplashActivity extends AppCompatActivity {
      * 跳转到主界面
      */
     private void enterHomeActivity() {
-
+        SystemClock.sleep(2000);
         startActivity(new Intent(this,MainActivity.class));
     }
 
