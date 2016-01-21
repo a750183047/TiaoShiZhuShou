@@ -33,6 +33,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import app.akexorcist.bluetotohspp.library.BluetoothSPP;
+
 public class SplashActivity extends AppCompatActivity {
 
     static final String UPDATEURL = "http://qingxinchengming.cn/appweb/tiaoshizhushou/update.json";
@@ -44,6 +46,7 @@ public class SplashActivity extends AppCompatActivity {
     private TextView version;
     private String descriptionFromInternet;
     private ProgressBar downloadProgress;
+    private BluetoothSPP bluetoothSPP;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +56,48 @@ public class SplashActivity extends AppCompatActivity {
         x.view().inject(this);
         //初始化View
         initView();
+        //初始化蓝牙等
+        bluetoothSPP = new BluetoothSPP(getApplicationContext());
+        if (!bluetoothSPP.isBluetoothAvailable()){
+            Toast.makeText(getApplicationContext(),"该设备不支持蓝牙功能",Toast.LENGTH_LONG).show();
+            finish();
+        }
 
 
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
 
+    }
+
+    /**
+     * 弹出蓝牙提示框
+     */
+    private void showBluetoothDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("蓝牙错误");
+        builder.setMessage("检测到蓝牙没有开启或者已经停用，请检查！");
+        builder.setNegativeButton("我知道了", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+               finish();
+            }
+        });
+        builder.setPositiveButton("下次再说", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+               finish();
+            }
+        });
+        builder.show();
     }
 
     /**
@@ -74,8 +115,16 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //检查更新
-        update();
+        if(!bluetoothSPP.isBluetoothEnabled()) {
+            // 蓝牙没有开启
+            showBluetoothDialog();
+        } else {
+            // 蓝牙已经开启
+            Toast.makeText(getApplicationContext(),"蓝牙已开启！",Toast.LENGTH_SHORT).show();
+            //检查更新
+            update();
+        }
+
 
     }
 
