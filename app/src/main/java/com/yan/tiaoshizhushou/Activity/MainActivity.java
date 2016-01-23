@@ -11,6 +11,7 @@ import android.util.Log;
 import com.yan.tiaoshizhushou.Fragment.FirstStopFragment;
 import com.yan.tiaoshizhushou.Fragment.FragmentIndex;
 import com.yan.tiaoshizhushou.R;
+import com.yan.tiaoshizhushou.Utils.ToastUtil;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import app.akexorcist.bluetotohspp.library.BluetoothState;
@@ -28,6 +29,8 @@ public class MainActivity extends MaterialNavigationDrawer {
         bluetoothSPP.setupService();
         bluetoothSPP.startService(BluetoothState.DEVICE_OTHER);
         Intent intent = new Intent(MainActivity.this, DeviceList.class);
+        intent.putExtra("scan_for_devices", "搜索蓝牙设备");
+        intent.putExtra("no_devices_found", "没有发现设备");
         startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
     }
 
@@ -46,6 +49,14 @@ public class MainActivity extends MaterialNavigationDrawer {
     @Override
     protected void onResume() {
         super.onResume();
+        bluetoothSPP.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() {
+            @Override
+            public void onDataReceived(byte[] data, String message) {
+                //接受到数据的指令
+                Log.e("MainActivity", "message:" + message + "\n" + "data:" + new String(data) + "\n" +
+                        "data[0]:" + data[0] + "data[1]:" + data[1]);
+            }
+        });
 
     }
 
@@ -70,6 +81,7 @@ public class MainActivity extends MaterialNavigationDrawer {
                 showBluetoothDialog();
             }
         }
+
     }
 
     /**
@@ -100,5 +112,6 @@ public class MainActivity extends MaterialNavigationDrawer {
         });
         builder.show();
     }
+
 
 }
