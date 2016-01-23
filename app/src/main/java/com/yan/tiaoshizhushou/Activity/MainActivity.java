@@ -19,13 +19,15 @@ import it.neokree.materialnavigationdrawer.MaterialNavigationDrawer;
 
 public class MainActivity extends MaterialNavigationDrawer {
 
-    private BluetoothSPP bluetoothSPP;
+    public BluetoothSPP bluetoothSPP;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        bluetoothSPP = new BluetoothSPP(getApplicationContext());
-        Intent intent = new Intent(getApplicationContext(), DeviceList.class);
+        bluetoothSPP = new BluetoothSPP(MainActivity.this);
+        bluetoothSPP.setupService();
+        bluetoothSPP.startService(BluetoothState.DEVICE_OTHER);
+        Intent intent = new Intent(MainActivity.this, DeviceList.class);
         startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
     }
 
@@ -38,7 +40,7 @@ public class MainActivity extends MaterialNavigationDrawer {
         this.addSection(newSection("一键停车", R.drawable.apps_home, new FirstStopFragment()));
 
         // create bottom section
-        this.addBottomSection(newSection("设置中心", R.drawable.ic_settings_black_24dp, new FragmentIndex()));
+        this.addBottomSection(newSection("设置中心", R.drawable.ic_settings_black_24dp, new FragmentIndex(bluetoothSPP)));
     }
 
     @Override
@@ -52,9 +54,9 @@ public class MainActivity extends MaterialNavigationDrawer {
             Log.e("main", "1");
             if(resultCode == Activity.RESULT_OK){
                 Log.e("main", "1.1");
-                bluetoothSPP.connect(data);
-                bluetoothSPP.setupService();
-                bluetoothSPP.startService(BluetoothState.DEVICE_OTHER);
+                if (data !=null){
+                    bluetoothSPP.connect(data);
+                }
             }else {
                 showBluetoothDialog();
             }
