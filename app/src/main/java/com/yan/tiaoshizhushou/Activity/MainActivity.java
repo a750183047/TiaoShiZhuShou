@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.yan.tiaoshizhushou.Fragment.FirstStopFragment;
 import com.yan.tiaoshizhushou.Fragment.FragmentIndex;
+import com.yan.tiaoshizhushou.Fragment.LineChartFragment;
 import com.yan.tiaoshizhushou.R;
 import com.yan.tiaoshizhushou.Utils.ToastUtil;
 
@@ -41,6 +42,7 @@ public class MainActivity extends MaterialNavigationDrawer {
 
         // create sections
         this.addSection(newSection("一键停车", R.drawable.apps_home, new FirstStopFragment()));
+        this.addSection(newSection("参数曲线",R.drawable.taskmanager_home,new LineChartFragment()));
 
         // create bottom section
         this.addBottomSection(newSection("设置中心", R.drawable.ic_settings_black_24dp, new FragmentIndex(bluetoothSPP)));
