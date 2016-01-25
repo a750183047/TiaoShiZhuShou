@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
@@ -41,8 +43,12 @@ public class LineChartFragment extends Fragment {
     private int xR = 0;
     private BluetoothSPP bluetoothSPP;
     private boolean isStartReceiv = false;
-    private LineData data;
-    private LineDataSet set, set2;
+    private boolean isNum1Show = false, isNum2Show = false, isNum3Show = false;
+    private LineData lineData;
+    private LineDataSet set, set2, set3;
+    private CheckBox cbNum1;
+    private CheckBox cbNum2;
+    private CheckBox cbNum3;
 
 
     @Nullable
@@ -53,6 +59,9 @@ public class LineChartFragment extends Fragment {
         xR = 0;
         mChart = (LineChart) view.findViewById(R.id.chart);
         start = (Button) view.findViewById(R.id.btn_start);
+        cbNum1 = (CheckBox) view.findViewById(R.id.cb_num1);
+        cbNum2 = (CheckBox) view.findViewById(R.id.cb_num2);
+        cbNum3 = (CheckBox) view.findViewById(R.id.cb_num3);
 
         mChart.setDescription("");
         mChart.setNoDataTextDescription("点击开始");  //中心黄子提示
@@ -94,25 +103,65 @@ public class LineChartFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!isStartReceiv) {
+                    start.setText("停止");
                     isStartReceiv = true;
+                } else {
+                    isStartReceiv = false;
+                    start.setText("开始");
                 }
             }
         });
 
+        /**
+         * 蓝牙接收监听
+         */
         bluetoothSPP.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() {
             @Override
             public void onDataReceived(byte[] data, String message) {
                 if (isStartReceiv) {
-                    xR++;
-                    addEntry(StringToWhat.stringToFloat(message));
-                    addEntry2(52);
+                    if (isNum1Show || isNum2Show || isNum3Show) {
+                        xR++;  //横坐标数值
+                        lineData.addXValue(String.valueOf(xR));
+                    }
+                    if (isNum1Show) {
+                        addEntry(StringToWhat.stringToFloat(message));
+                    }
+                    if (isNum2Show) {
+                        addEntry2(52);
+                    }
+                    if (isNum3Show) {
+                        addEntry3(53);
+                    }
+
+
                 }
 
 
             }
         });
 
+        /**
+         * checkBox监听
+         */
+        cbNum1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                isNum1Show = isChecked;
+            }
+        });
 
+        cbNum2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                isNum2Show = isChecked;
+            }
+        });
+        cbNum3.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                isNum3Show = isChecked;
+            }
+        });
     }
 
     /**
@@ -143,15 +192,16 @@ public class LineChartFragment extends Fragment {
         YAxis rightAxis = mChart.getAxisRight();
         rightAxis.setEnabled(false);
 
-        data = mChart.getData();
+        lineData = mChart.getData();
 
         isStartReceiv = false;
 
         set = createSet2();
         set2 = createSet();
-        data.addDataSet(set);
-        data.addDataSet(set2);
-
+        set3 = createSet3();
+        lineData.addDataSet(set);
+        lineData.addDataSet(set2);
+        lineData.addDataSet(set3);
 
 
     }
@@ -165,8 +215,7 @@ public class LineChartFragment extends Fragment {
     private void addEntry(float yValue) {
 
         // add a new x-value first
-        data.addXValue(String.valueOf(xR));
-        data.addEntry(new Entry(yValue, set.getEntryCount()), 0);
+        lineData.addEntry(new Entry(yValue, xR), 0);
 
         // let the chart know it's data has changed
         mChart.notifyDataSetChanged();
@@ -177,7 +226,7 @@ public class LineChartFragment extends Fragment {
         // mChart.setVisibleYRange(30, AxisDependency.LEFT);
 
         // move to the latest entry
-        mChart.moveViewToX(data.getXValCount() - 101);
+        mChart.moveViewToX(lineData.getXValCount() - 101);
 
         // this automatically refreshes the chart (calls invalidate())
         // mChart.moveViewTo(data.getXValCount()-7, 55f,
@@ -192,7 +241,8 @@ public class LineChartFragment extends Fragment {
      */
     private void addEntry2(float yValue) {
 
-        data.addEntry(new Entry(yValue, set2.getEntryCount()), 1);
+
+        lineData.addEntry(new Entry(yValue, xR), 1);
 
         // let the chart know it's data has changed
         mChart.notifyDataSetChanged();
@@ -203,7 +253,34 @@ public class LineChartFragment extends Fragment {
         // mChart.setVisibleYRange(30, AxisDependency.LEFT);
 
         // move to the latest entry
-        mChart.moveViewToX(data.getXValCount() - 101);
+        mChart.moveViewToX(lineData.getXValCount() - 101);
+
+        // this automatically refreshes the chart (calls invalidate())
+        // mChart.moveViewTo(data.getXValCount()-7, 55f,
+        // AxisDependency.LEFT);
+
+    }
+
+    /***
+     * 添加一个数据
+     *
+     * @param yValue
+     */
+    private void addEntry3(float yValue) {
+
+
+        lineData.addEntry(new Entry(yValue, xR), 2);
+
+        // let the chart know it's data has changed
+        mChart.notifyDataSetChanged();
+
+        // limit the number of visible entries 允许当页显示的数据数量
+
+        mChart.setVisibleXRangeMaximum(100);
+        // mChart.setVisibleYRange(30, AxisDependency.LEFT);
+
+        // move to the latest entry
+        mChart.moveViewToX(lineData.getXValCount() - 101);
 
         // this automatically refreshes the chart (calls invalidate())
         // mChart.moveViewTo(data.getXValCount()-7, 55f,
@@ -213,6 +290,7 @@ public class LineChartFragment extends Fragment {
 
     /**
      * 创建一个数据的格式
+     *
      * @return
      */
     private LineDataSet createSet() {
@@ -233,6 +311,7 @@ public class LineChartFragment extends Fragment {
 
     /**
      * 创建第二个数据的格式
+     *
      * @return
      */
     private LineDataSet createSet2() {
@@ -246,6 +325,27 @@ public class LineChartFragment extends Fragment {
         set.setFillColor(ColorTemplate.getHoloBlue());
         set.setHighLightColor(Color.rgb(244, 117, 117));
         set.setValueTextColor(Color.BLUE);
+        set.setValueTextSize(9f);
+        set.setDrawValues(false);
+        return set;
+    }
+
+    /**
+     * 创建第三个数据的格式
+     *
+     * @return
+     */
+    private LineDataSet createSet3() {
+
+        LineDataSet set = new LineDataSet(null, "测试数据3");
+        set.setAxisDependency(YAxis.AxisDependency.LEFT);
+        set.setColor(Color.GREEN);
+        set.setCircleColor(Color.LTGRAY);
+        set.setLineWidth(2f);
+        set.setFillAlpha(65);
+        set.setFillColor(ColorTemplate.getHoloBlue());
+        set.setHighLightColor(Color.rgb(244, 117, 117));
+        set.setValueTextColor(Color.GREEN);
         set.setValueTextSize(9f);
         set.setDrawValues(false);
         return set;
