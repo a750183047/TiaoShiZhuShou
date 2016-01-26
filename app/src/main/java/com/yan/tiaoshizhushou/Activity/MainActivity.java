@@ -4,15 +4,14 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.yan.tiaoshizhushou.Fragment.FirstStopFragment;
 import com.yan.tiaoshizhushou.Fragment.FragmentIndex;
 import com.yan.tiaoshizhushou.Fragment.LineChartFragment;
+import com.yan.tiaoshizhushou.Fragment.NotesFragment;
 import com.yan.tiaoshizhushou.R;
-import com.yan.tiaoshizhushou.Utils.ToastUtil;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import app.akexorcist.bluetotohspp.library.BluetoothState;
@@ -43,6 +42,7 @@ public class MainActivity extends MaterialNavigationDrawer {
         // create sections
         this.addSection(newSection("一键停车", R.drawable.apps_home, new FirstStopFragment()));
         this.addSection(newSection("参数曲线",R.drawable.taskmanager_home,new LineChartFragment()));
+        this.addSection(newSection("软件说明",R.drawable.sysoptmize,new NotesFragment()));
 
         // create bottom section
         this.addBottomSection(newSection("设置中心", R.drawable.ic_settings_black_24dp, new FragmentIndex(bluetoothSPP)));
