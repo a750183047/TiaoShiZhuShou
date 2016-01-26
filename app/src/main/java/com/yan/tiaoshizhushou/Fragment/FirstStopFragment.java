@@ -60,7 +60,7 @@ public class FirstStopFragment extends Fragment {
                 } else if (stopButton.getText().toString().equals("启动")) {
                     stopButton.setBackgroundResource(R.drawable.button_selector_red);
                     stopButton.setText("停车");
-                    bluetoothSPP.send(new byte[]{'s','s','w','\r','\n'}, false);
+                    bluetoothSPP.send("stop",true);
 
                     //发送启动指令
 

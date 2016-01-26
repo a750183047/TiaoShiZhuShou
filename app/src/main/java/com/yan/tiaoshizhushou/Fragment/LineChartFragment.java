@@ -21,6 +21,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.yan.tiaoshizhushou.Activity.MainActivity;
+import com.yan.tiaoshizhushou.Bean.StringNum;
 import com.yan.tiaoshizhushou.R;
 import com.yan.tiaoshizhushou.Utils.StringToWhat;
 import com.yan.tiaoshizhushou.Utils.ToastUtil;
@@ -42,7 +43,7 @@ public class LineChartFragment extends Fragment {
     private Button start;
     private int xR = 0;
     private BluetoothSPP bluetoothSPP;
-    private boolean isStartReceiv = false;
+    private boolean isStartReceive = false;
     private boolean isNum1Show = false, isNum2Show = false, isNum3Show = false;
     private LineData lineData;
     private LineDataSet set, set2, set3;
@@ -102,11 +103,11 @@ public class LineChartFragment extends Fragment {
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isStartReceiv) {
+                if (!isStartReceive) {
                     start.setText("停止");
-                    isStartReceiv = true;
+                    isStartReceive = true;
                 } else {
-                    isStartReceiv = false;
+                    isStartReceive = false;
                     start.setText("开始");
                 }
             }
@@ -118,19 +119,21 @@ public class LineChartFragment extends Fragment {
         bluetoothSPP.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() {
             @Override
             public void onDataReceived(byte[] data, String message) {
-                if (isStartReceiv) {
+                StringNum stringNum;
+                if (isStartReceive) {
+                    stringNum = StringToWhat.stringToFloats(message);
                     if (isNum1Show || isNum2Show || isNum3Show) {
                         xR++;  //横坐标数值
                         lineData.addXValue(String.valueOf(xR));
                     }
                     if (isNum1Show) {
-                        addEntry(StringToWhat.stringToFloat(message));
+                        addEntry(stringNum.getNum1());
                     }
                     if (isNum2Show) {
-                        addEntry2(52);
+                        addEntry2(stringNum.getNum2());
                     }
                     if (isNum3Show) {
-                        addEntry3(53);
+                        addEntry3(stringNum.getNum3());
                     }
 
 
@@ -194,7 +197,7 @@ public class LineChartFragment extends Fragment {
 
         lineData = mChart.getData();
 
-        isStartReceiv = false;
+        isStartReceive = false;
 
         set = createSet2();
         set2 = createSet();
@@ -306,6 +309,8 @@ public class LineChartFragment extends Fragment {
         set.setValueTextColor(Color.RED);
         set.setValueTextSize(9f);
         set.setDrawValues(false);
+        set.setDrawCircles(false);
+        set.setDrawCubic(false);
         return set;
     }
 
@@ -327,6 +332,8 @@ public class LineChartFragment extends Fragment {
         set.setValueTextColor(Color.BLUE);
         set.setValueTextSize(9f);
         set.setDrawValues(false);
+        set.setDrawCircles(false);
+        set.setDrawCubic(false);
         return set;
     }
 
@@ -348,6 +355,8 @@ public class LineChartFragment extends Fragment {
         set.setValueTextColor(Color.GREEN);
         set.setValueTextSize(9f);
         set.setDrawValues(false);
+        set.setDrawCircles(false);
+        set.setDrawCubic(false);
         return set;
     }
 
