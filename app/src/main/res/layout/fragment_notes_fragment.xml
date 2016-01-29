@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="协议简单说明:"
+        android:textSize="30sp"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="一键停车中，软件会发送两个字符串：  go 和 stop"
+        android:textSize="15sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="参数曲线中，软件接收的字符串格式为   num1:num2:num3  字符串结尾必须有 \\r\\n 否则软件无法识别。"
+        android:textSize="15sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="如果发送的字符串不是由数值转换而来的，软件会显示 0 "
+        android:textSize="15sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="单片机端可以用 sprintf 函数来转换数值"
+        android:textSize="15sp"/>
+
+
+</LinearLayout>

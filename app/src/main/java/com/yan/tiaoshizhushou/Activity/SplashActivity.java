@@ -57,6 +57,13 @@ public class SplashActivity extends AppCompatActivity {
         //初始化View
         initView();
         //初始化蓝牙等
+
+        //创建文件夹
+        String path = Environment.getExternalStorageDirectory() + "/TiaoShiZhuShou/image"; //存储地址
+        File destDir = new File(path);
+        if (!destDir.exists()) {
+            destDir.mkdirs();
+        }
         bluetoothSPP = new BluetoothSPP(getApplicationContext());
         if (!bluetoothSPP.isBluetoothAvailable()){
             Toast.makeText(getApplicationContext(),"该设备不支持蓝牙功能",Toast.LENGTH_LONG).show();
